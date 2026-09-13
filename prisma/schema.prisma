@@ -1,0 +1,88 @@
+// prisma/schema.prisma
+// Run: npx prisma migrate dev --name init   (after setting DATABASE_URL in .env)
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  WORKER
+  SUPERVISOR
+  ADMIN
+}
+
+enum ComplianceStatus {
+  GREEN
+  YELLOW
+  RED
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  sites     Site[]
+  createdAt DateTime @default(now())
+}
+
+model Site {
+  id             String            @id @default(cuid())
+  name           String
+  organization   Organization      @relation(fields: [organizationId], references: [id])
+  organizationId String
+  workers        Worker[]
+  complianceStatus ComplianceStatus @default(GREEN)
+  createdAt      DateTime          @default(now())
+}
+
+model Worker {
+  id            String   @id @default(cuid())
+  name          String
+  employeeCode  String   @unique
+  passwordHash  String
+  language      String   @default("en") // "en" | "hi" | "sat" (Santali)
+  role          Role     @default(WORKER)
+  site          Site     @relation(fields: [siteId], references: [id])
+  siteId        String
+  attempts      MissionAttempt[]
+  certificates  Certificate[]
+  createdAt     DateTime @default(now())
+}
+
+model Mission {
+  id          String   @id // matches lib/scenarios.ts Mission.id, e.g. "fire-l1"
+  hazard      String
+  title       String
+  level       Int
+  attempts    MissionAttempt[]
+}
+
+model MissionAttempt {
+  id              String   @id @default(cuid())
+  worker          Worker   @relation(fields: [workerId], references: [id])
+  workerId        String
+  mission         Mission  @relation(fields: [missionId], references: [id])
+  missionId       String
+  startedAt       DateTime
+  completedAt     DateTime
+  totalPoints     Int
+  percentCorrect  Int
+  passed          Boolean
+  stepResults     Json     // serialized StepAttempt[] from lib/scoring.ts
+  createdAt       DateTime @default(now())
+}
+
+model Certificate {
+  id          String   @id @default(cuid())
+  worker      Worker   @relation(fields: [workerId], references: [id])
+  workerId    String
+  missionId   String
+  issuedAt    DateTime @default(now())
+  expiresAt   DateTime
+  qrToken     String   @unique // random token embedded in the QR code / verify URL
+  revoked     Boolean  @default(false)
+}
