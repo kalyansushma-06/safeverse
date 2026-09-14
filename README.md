@@ -758,11 +758,6 @@ The goal is to understand whether they can **apply it when it matters**.
 
 ## 📄 License
 
-Add your preferred project license here, such as:
-
-```text
-MIT License
-```
 
 ---
 
