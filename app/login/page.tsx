@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function WorkerLoginPage() {
+function WorkerLoginForm() {
   const router = useRouter();
   const search = useSearchParams();
   const [employeeCode, setEmployeeCode] = useState("");
@@ -84,5 +84,17 @@ export default function WorkerLoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function WorkerLoginPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-void text-paper flex items-center justify-center px-6">
+        <p className="text-mist text-sm">Loading...</p>
+      </main>
+    }>
+      <WorkerLoginForm />
+    </Suspense>
   );
 }
