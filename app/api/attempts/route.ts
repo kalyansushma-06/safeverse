@@ -6,7 +6,7 @@
 // — creates a Certificate row with a fresh QR token. Returns the score
 // breakdown plus the certificate id (its qrToken) so the client can link
 // straight to /certificate/[certId].
-
+export const dynamic = 'force-dynamic';
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { scoreMissionAttempt, MissionAttempt } from "@/lib/scoring";
