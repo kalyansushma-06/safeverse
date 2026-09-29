@@ -86,3 +86,11 @@ model Certificate {
   qrToken     String   @unique // random token embedded in the QR code / verify URL
   revoked     Boolean  @default(false)
 }
+
+model EmergencyAlert {
+  id          String   @id @default(cuid())
+  message     String
+  active      Boolean  @default(true)
+  activatedAt DateTime @default(now())
+  resolvedAt  DateTime?
+}

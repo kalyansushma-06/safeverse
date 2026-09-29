@@ -125,17 +125,13 @@ export default function ARScene({
 
 function ARButtonOverlay() {
   if (typeof window === "undefined") return null;
-
   return (
     <div className="mono text-xs">
       <ARButton
         sessionInit={{
           requiredFeatures: ["local-floor"],
           optionalFeatures: ["hit-test", "dom-overlay"],
-          domOverlay: {
-            root: document.body as Element
-          }
-        }}
+          domOverlay: { root: document.body}}
         className="bg-signal text-void px-3 py-1 rounded font-bold"
       />
     </div>
